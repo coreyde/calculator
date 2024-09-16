@@ -1,0 +1,40 @@
+html,
+body {
+  height: 100%; /* Make sure the body takes up the full height */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.calculator {
+  height: 300px;
+  width: 300px;
+  display: grid;
+}
+
+.display {
+  display: grid;
+  background-color: aqua;
+  color: black;
+  grid-column: span 4;
+  text-align: right;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+.calc-buttons {
+  display: grid;
+  column-gap: 1px;
+  row-gap: 2px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+.calc-buttons button:nth-child(18) {
+  grid-column: span 2;
+}
+
+.btn {
+  background-color: white;
+  color: green;
+  border-radius: 10px;
+}
