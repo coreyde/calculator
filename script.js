@@ -1,19 +1,19 @@
-let operand1 = 0;
-let operand2 = 0;
-let curValue = 0;
-
 const display = document.querySelector(".display");
 
 function performOperation(operand1, operator, operand2) {
   switch (operator) {
     case "+":
-      add(operand1, operand2);
+      result = add(operand1, operand2);
+      return result;
     case "-":
-      subtract(operand1, operand2);
+      result = subtract(operand1, operand2);
+      return result;
     case "*":
-      multiply(operand1, operand2);
+      result = multiply(operand1, operand2);
+      return result;
     case "/":
-      divide(operand1, operand2);
+      result = divide(operand1, operand2);
+      return result;
   }
 }
 
@@ -41,6 +41,8 @@ function buttonPressed() {
   let buttons = document.querySelectorAll(".btn");
   let number = "";
   let operator = "";
+  let operand1 = "";
+  let operand2 = "";
 
   buttons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -48,7 +50,17 @@ function buttonPressed() {
 
       if (isNaN(keyPress)) {
         updateDisplay(number);
-        operator += keyPress;
+        if (operand1 === "") {
+          operator = "";
+          operator += keyPress;
+          console.log(operator);
+          operand1 = parseInt(number);
+          console.log(operand1);
+        } else if (keyPress === "=") {
+          operand2 = parseInt(number);
+          console.log(operand2);
+          updateDisplay(performOperation(operand1, operator, operand2));
+        }
         number = "";
       } else {
         number += keyPress;
@@ -71,6 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
   buttonPressed();
 });
 
-//store var1 and var2 so that you can do performOperation()
-//do performOperation() function in buttonPressed()
-//update display with final result
+// Handle cases for continuing calculations after "=" has already been pressed
+// Allow for the above to continue eg. 10 + 10 = 20 + 10 = 30
+// Add function for CLEAR, "+/-" and "%"
