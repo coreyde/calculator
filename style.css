@@ -7,8 +7,8 @@ body {
 }
 
 .calculator {
-  height: 300px;
-  width: 300px;
+  height: 400px;
+  width: 400px;
   display: grid;
 }
 
@@ -18,7 +18,9 @@ body {
   color: black;
   grid-column: span 4;
   text-align: right;
+  vertical-align: text-bottom;
   font-weight: bold;
+  font-size: 35px;
   border-radius: 10px;
 }
 
