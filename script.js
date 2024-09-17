@@ -37,6 +37,16 @@ function divide(operand1, operand2) {
   }
 }
 
+function clear(...args) {
+  for (let i = 0; i < args.length; i++) {
+    args[i] = "";
+  }
+}
+
+function intNegPos(number) {
+  return -number;
+}
+
 function buttonPressed() {
   let buttons = document.querySelectorAll(".btn");
   let number = "";
@@ -83,6 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
   buttonPressed();
 });
 
+// Add function for "%"
 // Handle cases for continuing calculations after "=" has already been pressed
 // Allow for the above to continue eg. 10 + 10 = 20 + 10 = 30
-// Add function for CLEAR, "+/-" and "%"
