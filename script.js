@@ -1,3 +1,10 @@
+calculatorState = {
+  curNum: "",
+  operator: "",
+  operand1: "",
+  operand2: "",
+};
+
 const display = document.querySelector(".display");
 
 function performOperation(operand1, operator, operand2) {
@@ -13,6 +20,14 @@ function performOperation(operand1, operator, operand2) {
       return result;
     case "/":
       result = divide(operand1, operand2);
+      return result;
+    case "+/-":
+      console.log("here");
+      if (operand2 === "" || operand2 === NaN) {
+        result = intNegPos(operand1);
+      } else {
+        result = intNegPos(operand2);
+      }
       return result;
   }
 }
@@ -47,35 +62,50 @@ function intNegPos(number) {
   return -number;
 }
 
+function handleNumber(curNum, operand1, operand2) {}
+function handleOperator(operator) {}
+
 function buttonPressed() {
   let buttons = document.querySelectorAll(".btn");
-  let number = "";
-  let operator = "";
-  let operand1 = "";
-  let operand2 = "";
 
   buttons.forEach((button) => {
     button.addEventListener("click", function () {
       let keyPress = button.dataset.value;
 
       if (isNaN(keyPress)) {
-        updateDisplay(number);
-        if (operand1 === "") {
-          operator = "";
-          operator += keyPress;
+        updateDisplay(calculatorState.curNum);
+        if (calculatorState.operand1 === "") {
+          calculatorState.operator = "";
+          calculatorState.operator += keyPress;
           console.log(operator);
-          operand1 = parseInt(number);
-          console.log(operand1);
-        } else if (keyPress === "=") {
-          operand2 = parseInt(number);
-          console.log(operand2);
-          updateDisplay(performOperation(operand1, operator, operand2));
+          operand1 = parseInt(curNum);
+          console.log(calculatorState.operand1);
+          if (calculatorState.operator) {
+            updateDisplay(
+              performOperation(
+                calculatorState.operand1,
+                calculatorState.operator,
+                calculatorState.operand2
+              )
+            );
+          }
+          calculatorState.operator = "";
+        } else if (keyPress === "=" || keyPress === "+/-") {
+          calculatorState.operand2 = parseInt(calculatorState.curNum);
+          console.log(calculatorState.operand2);
+          updateDisplay(
+            performOperation(
+              calculatorState.operand1,
+              calculatorState.operator,
+              calculatorState.operand2
+            )
+          );
         }
-        number = "";
+        calculatorState.curNum = "";
       } else {
-        number += keyPress;
-        console.log(number);
-        updateDisplay(number);
+        calculatorState.curNum += keyPress;
+        console.log(calculatorState.curNum);
+        updateDisplay(calculatorState.curNum);
       }
     });
   });
@@ -93,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
   buttonPressed();
 });
 
+// Finish functionality for intNegPos function
 // Add function for "%"
 // Handle cases for continuing calculations after "=" has already been pressed
 // Allow for the above to continue eg. 10 + 10 = 20 + 10 = 30
