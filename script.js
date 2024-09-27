@@ -1,4 +1,4 @@
-calculatorState = {
+const calculatorState = {
   curNum: "",
   operator: "",
   operand1: "",
@@ -11,26 +11,22 @@ const display = document.querySelector(".display");
 function performOperation(operand1, operator, operand2) {
   switch (operator) {
     case "+":
-      result = add(operand1, operand2);
-      return result;
+      return add(operand1, operand2);
     case "-":
-      result = subtract(operand1, operand2);
-      return result;
+      return subtract(operand1, operand2);
     case "*":
-      result = multiply(operand1, operand2);
-      return result;
+      return multiply(operand1, operand2);
     case "/":
-      result = divide(operand1, operand2);
-      return result;
+      return divide(operand1, operand2);
+    case "%":
+      return handlePercentage(operand1, operand2);
+    case "clear":
+      clearCalculator();
+      break;
     case "+/-":
-      if (operand2 === "" || isNaN(operand2)) {
-        result = intNegPos(operand1);
-        calculatorState.operand1 = result;
-      } else {
-        result = intNegPos(operand2);
-        calculatorState.operand2 = result;
-      }
-      return result;
+      return handleNegPos(operand1, operand2);
+    default:
+      console.error("Invalid operator");
   }
 }
 
@@ -49,19 +45,62 @@ function multiply(operand1, operand2) {
 function divide(operand1, operand2) {
   if (operand2 === 0) {
     alert("Cannot divide a number by 0!");
+    return null; // Prevents further calculations with a null result
   } else {
     return operand1 / operand2;
   }
 }
 
-function clear(...args) {
-  for (let i = 0; i < args.length; i++) {
-    args[i] = "";
+function handlePercentage(operand1, operand2) {
+  if (operand2 === "" || isNaN(operand2)) {
+    return divide(operand1, 100);
+  } else {
+    return divide(operand2, 100);
+  }
+}
+
+function clearCalculator() {
+  Object.keys(calculatorState).forEach((key) => (calculatorState[key] = ""));
+  updateDisplay(0);
+}
+
+function handleNegPos(operand1, operand2) {
+  if (operand2 === "" || isNaN(operand2)) {
+    return intNegPos(operand1);
+  } else {
+    return intNegPos(operand2);
   }
 }
 
 function intNegPos(number) {
   return -number;
+}
+
+function handleNumberInput(keyPress) {
+  calculatorState.curNum += keyPress;
+  updateDisplay(calculatorState.curNum);
+}
+
+function handleOperatorInput(keyPress) {
+  if (calculatorState.operand1 === "") {
+    console.log("here");
+    calculatorState.operator = keyPress;
+    calculatorState.operand1 = parseFloat(calculatorState.curNum);
+    calculatorState.curNum = "";
+  } else {
+    console.log("here also");
+    calculatorState.operand2 = parseFloat(calculatorState.curNum);
+    calculatorState.operator = keyPress;
+    updateDisplay(
+      performOperation(
+        calculatorState.operand1,
+        calculatorState.operator,
+        calculatorState.operand2
+      )
+    );
+    calculatorState.operand1 = calculatorState.updatedNum;
+    calculatorState.curNum = "";
+  }
 }
 
 function buttonPressed() {
@@ -72,27 +111,8 @@ function buttonPressed() {
       let keyPress = button.dataset.value;
 
       if (isNaN(keyPress)) {
-        updateDisplay(calculatorState.curNum);
-        if (calculatorState.operand1 === "") {
-          calculatorState.operator = "";
-          calculatorState.operator += keyPress;
-          calculatorState.operand1 = parseFloat(calculatorState.curNum);
-          if (calculatorState.operator) {
-            updateDisplay(
-              performOperation(
-                calculatorState.operand1,
-                calculatorState.operator,
-                calculatorState.operand2
-              )
-            );
-          }
-        } else if (keyPress === "=") {
-          console.log(`curNum: ${calculatorState.curNum}`);
+        if (keyPress === "=") {
           calculatorState.operand2 = parseFloat(calculatorState.curNum);
-          console.log(
-            `current operation: ${calculatorState.operand1} ${calculatorState.operator} ${calculatorState.operand2}`
-          );
-          console.log(`updatedNum: ${calculatorState.updatedNum}`);
           updateDisplay(
             performOperation(
               calculatorState.operand1,
@@ -100,35 +120,26 @@ function buttonPressed() {
               calculatorState.operand2
             )
           );
+          calculatorState.operand1 = calculatorState.updatedNum;
+          calculatorState.operator = "";
+          calculatorState.curNum = "";
+        } else if (keyPress === "clear") {
+          clearCalculator();
+        } else {
+          handleOperatorInput(keyPress);
         }
-        calculatorState.curNum = "";
-        calculatorState.operand1 = calculatorState.updatedNum;
-      } else if (keyPress === "+/-") {
-        updateDisplay(
-          performOperation(
-            calculatorState.operand1,
-            calculatorState.operator,
-            calculatorState.operand2
-          )
-        );
-        console.log(`operand 1: ${calculatorState.operand1}`);
-        calculatorState.curNum = "";
       } else {
-        calculatorState.curNum += keyPress;
-        console.log(calculatorState.curNum);
-        updateDisplay(calculatorState.curNum);
+        handleNumberInput(keyPress);
       }
     });
   });
 }
 
 function updateDisplay(number) {
-  // Ensure the number is parsed before updating the display
   let parsedNumber = parseFloat(number);
   if (!isNaN(parsedNumber)) {
-    console.log(`updateDisplay: ${parsedNumber}`);
     display.textContent = parsedNumber;
-    calculatorState.updatedNum = parsedNumber; // Ensure updatedNum is numeric
+    calculatorState.updatedNum = parsedNumber;
   } else {
     console.log(`Invalid number: ${number}`);
   }
@@ -137,8 +148,3 @@ function updateDisplay(number) {
 document.addEventListener("DOMContentLoaded", function () {
   buttonPressed();
 });
-
-// Finish functionality for intNegPos function
-// Add function for "%"
-// Handle cases for continuing calculations after "=" has already been pressed
-// Allow for the above to continue eg. 10 + 10 = 20 + 10 = 30
