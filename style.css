@@ -1,9 +1,10 @@
 html,
 body {
-  height: 100%; /* Make sure the body takes up the full height */
+  height: 100%;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  justify-content: center;
+  align-items: center;
+  background-color: gray;
 }
 
 .calculator {
