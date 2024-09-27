@@ -1,3 +1,4 @@
+// Set default calculator state as object
 const calculatorState = {
   curNum: "",
   operator: "",
@@ -6,8 +7,10 @@ const calculatorState = {
   updatedNum: "",
 };
 
+// Access calculator display
 const display = document.querySelector(".display");
 
+// Perform aritmetic operation based on operator
 function performOperation(operand1, operator, operand2) {
   switch (operator) {
     case "+":
@@ -59,11 +62,13 @@ function handlePercentage(operand1, operand2) {
   }
 }
 
+// Reset all keys in calculatorState object to ""
 function clearCalculator() {
   Object.keys(calculatorState).forEach((key) => (calculatorState[key] = ""));
   updateDisplay(0);
 }
 
+// Handle "+/-" operator
 function handleNegPos(operand1, operand2) {
   if (operand2 === "" || isNaN(operand2)) {
     return intNegPos(operand1);
@@ -82,13 +87,12 @@ function handleNumberInput(keyPress) {
 }
 
 function handleOperatorInput(keyPress) {
+  // If first digit is empty, save curNum to operand1 else save to operand2
   if (calculatorState.operand1 === "") {
-    console.log("here");
     calculatorState.operator = keyPress;
     calculatorState.operand1 = parseFloat(calculatorState.curNum);
     calculatorState.curNum = "";
   } else {
-    console.log("here also");
     calculatorState.operand2 = parseFloat(calculatorState.curNum);
     calculatorState.operator = keyPress;
     updateDisplay(
@@ -103,6 +107,7 @@ function handleOperatorInput(keyPress) {
   }
 }
 
+// Event listener for button presses to determine next step
 function buttonPressed() {
   let buttons = document.querySelectorAll(".btn");
 
@@ -135,6 +140,7 @@ function buttonPressed() {
   });
 }
 
+// Display the current number being pressed/result
 function updateDisplay(number) {
   let parsedNumber = parseFloat(number);
   if (!isNaN(parsedNumber)) {
@@ -145,6 +151,7 @@ function updateDisplay(number) {
   }
 }
 
+// Initialize button listener ONLY after the html elements have fully loaded
 document.addEventListener("DOMContentLoaded", function () {
   buttonPressed();
 });
